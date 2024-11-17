@@ -16,7 +16,7 @@ actions = np.array(['hello', 'thanks', 'iloveyou'])
 # konuşmasını sağlayan kod
 engine = pyttsx3.init()
 
-engine.setProperty('rate', 150)  # konuşma hızı için 
+engine.setProperty('rate', 150)  # konuşma hızını ayarlamak
 engine.setProperty('volume', 1)  # ses yüksekligi 1 ile 0 arasında
 cap = cv2.VideoCapture(0)
 
@@ -44,7 +44,7 @@ model.add(Dense(32, activation='relu'))
 model.add(Dense(actions.shape[0], activation='softmax'))
 
 
-model.load_weights('D:\python\el\poz_alg-lama-main\hareket-algilama/action.h5')
+model.load_weights('action.h5')
 
 def mediapipe_detection(image, model):
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)  # COLOR CONVERSION BGR 2 RGB
