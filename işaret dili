@@ -22,8 +22,8 @@ engine.setProperty('volume', 1)  # Ses yüksekliği 1 ile 0 arasında
 cap = cv2.VideoCapture(0)
 
 # Çözünürlük ayarlarını yapalım (genişlik, yükseklik)
-cap.set(cv2.CAP_PROP_FRAME_WIDTH, 800)  # Genişlik (width)
-cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 600)  # Yükseklik (height)
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 800)  # Genişlik 
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 600)  # Yükseklik
 
 
 def speak_action(action):
@@ -45,7 +45,7 @@ model.add(Dense(32, activation='relu'))
 model.add(Dense(actions.shape[0], activation='softmax'))
 
 
-model.load_weights('D:\python\el\poz_alg-lama-main\hareket-algilama/action.h5')
+model.load_weights('action.h5')
 
 def mediapipe_detection(image, model):
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)  # COLOR CONVERSION BGR 2 RGB
@@ -66,29 +66,25 @@ def draw_styled_landmarks(image, results):
     if results.face_landmarks:
         mp_drawing.draw_landmarks(image, results.face_landmarks, mp_holistic.FACEMESH_CONTOURS,
                                  mp_drawing.DrawingSpec(color=(10, 000, 00), thickness=1, circle_radius=1),
-                                 mp_drawing.DrawingSpec(color=(10, 000, 000), thickness=1, circle_radius=1)
-                                 )
-    
+                                 mp_drawing.DrawingSpec(color=(10, 000, 000), thickness=1, circle_radius=1))
+
     # Poz bağlantılarını çiz
     if results.pose_landmarks:
         mp_drawing.draw_landmarks(image, results.pose_landmarks, mp_holistic.POSE_CONNECTIONS,
                                  mp_drawing.DrawingSpec(color=(20, 20, 20), thickness=2, circle_radius=4),
-                                 mp_drawing.DrawingSpec(color=(20, 20, 200), thickness=2, circle_radius=2)
-                                 )
+                                 mp_drawing.DrawingSpec(color=(20, 20, 200), thickness=2, circle_radius=2))
     
     # Sol el bağlantılarını çiz
     if results.left_hand_landmarks:
         mp_drawing.draw_landmarks(image, results.left_hand_landmarks, mp_holistic.HAND_CONNECTIONS,
                                  mp_drawing.DrawingSpec(color=(200, 22, 22), thickness=2, circle_radius=4),
-                                 mp_drawing.DrawingSpec(color=(200, 22, 222), thickness=2, circle_radius=2)
-                                 )
+                                 mp_drawing.DrawingSpec(color=(200, 22, 222), thickness=2, circle_radius=2))
     
     # Sağ el bağlantılarını çiz
     if results.right_hand_landmarks:
         mp_drawing.draw_landmarks(image, results.right_hand_landmarks, mp_holistic.HAND_CONNECTIONS,
                                  mp_drawing.DrawingSpec(color=(222, 222, 22), thickness=2, circle_radius=4),
-                                 mp_drawing.DrawingSpec(color=(222, 22, 222), thickness=2, circle_radius=2)
-                                 )
+                                 mp_drawing.DrawingSpec(color=(222, 22, 222), thickness=2, circle_radius=2))
 
 def extract_keypoints(results):
     pose = np.array([[res.x, res.y, res.z, res.visibility] for res in results.pose_landmarks.landmark]).flatten() if results.pose_landmarks else np.zeros(33*4)
@@ -120,7 +116,6 @@ with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=
         # Read feed
         ret, frame = cap.read()
 
-        # Flip the image horizontally to create a mirror effect
         frame = cv2.flip(frame, 1)  # Ayna etkisi eklemek için
 
         # Make detections
