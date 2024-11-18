@@ -1,3 +1,18 @@
+# Telif Hakkı (c) 2024 Harun Orhan
+# Bu kod, açık kaynak MIT Lisansı altında yayınlanmıştır.
+#
+# İzinler:
+# - Herkesin bu kodu ticari veya ticari olmayan amaçlarla kullanma, değiştirme,
+#   dağıtma ve türetilmiş çalışmalar oluşturma hakkı vardır.
+# 
+# Koşullar:
+# - Bu bildirimin kopyaları ve lisans bilgisi kodla birlikte korunmalıdır.
+# - Kodun sağlanması "olduğu gibi" (AS IS) şeklindedir, garanti verilmez.
+#
+# Daha fazla bilgi için LICENSE dosyasını inceleyin.
+
+
+
 import cv2
 import numpy as np
 import os
@@ -5,7 +20,7 @@ import time
 import mediapipe as mp
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense
-import pyttsx3  # Import pyttsx3
+import pyttsx3  
 import threading
 
 mp_holistic = mp.solutions.holistic  # Holistic model
@@ -21,7 +36,7 @@ engine.setProperty('rate', 150)  # Konuşma hızını ayarlamak
 engine.setProperty('volume', 1)  # Ses yüksekliği 1 ile 0 arasında
 cap = cv2.VideoCapture(0)
 
-# Çözünürlük ayarlarını yapalım (genişlik, yükseklik)
+# Çözünürlük ayarları (genişlik, yükseklik)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 800)  # Genişlik 
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 600)  # Yükseklik
 
@@ -56,10 +71,10 @@ def mediapipe_detection(image, model):
     return image, results
 
 def draw_landmarks(image, results):
-    mp_drawing.draw_landmarks(image, results.face_landmarks, mp_holistic.FACE_CONNECTIONS)  # Draw face connections
-    mp_drawing.draw_landmarks(image, results.pose_landmarks, mp_holistic.POSE_CONNECTIONS)  # Draw pose connections
-    mp_drawing.draw_landmarks(image, results.left_hand_landmarks, mp_holistic.HAND_CONNECTIONS)  # Draw left hand connections
-    mp_drawing.draw_landmarks(image, results.right_hand_landmarks, mp_holistic.HAND_CONNECTIONS)  # Draw right hand connections
+    mp_drawing.draw_landmarks(image, results.face_landmarks, mp_holistic.FACE_CONNECTIONS) 
+    mp_drawing.draw_landmarks(image, results.pose_landmarks, mp_holistic.POSE_CONNECTIONS) 
+    mp_drawing.draw_landmarks(image, results.left_hand_landmarks, mp_holistic.HAND_CONNECTIONS) 
+    mp_drawing.draw_landmarks(image, results.right_hand_landmarks, mp_holistic.HAND_CONNECTIONS)
 
 def draw_styled_landmarks(image, results):
     # Yüz bağlantılarını çiz (FACEMESH_CONTOURS kullan)
@@ -113,18 +128,18 @@ threshold = 0.95
 with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5) as holistic:
     while cap.isOpened():
 
-        # Read feed
+        #akış okuma
         ret, frame = cap.read()
 
         frame = cv2.flip(frame, 1)  # Ayna etkisi eklemek için
 
-        # Make detections
+        # tespit yapma
         image, results = mediapipe_detection(frame, holistic)
 
-        # Draw landmarks
+        # yer işareti
         draw_styled_landmarks(image, results)
 
-        # 2. Prediction logic
+        # 2.tahmin yürütme
         keypoints = extract_keypoints(results)
         sequence.append(keypoints)
         sequence = sequence[-30:]
@@ -132,7 +147,7 @@ with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=
         if len(sequence) == 30:
             res = model.predict(np.expand_dims(sequence, axis=0))[0]
 
-            # 3. Viz logic
+            # 3. mantık
             if res[np.argmax(res)] > threshold:
                 if len(sentence) > 0:
                     if actions[np.argmax(res)] != sentence[-1]:
@@ -142,22 +157,22 @@ with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=
                 else:
                     sentence.append(actions[np.argmax(res)])
                     # Speak the detected action
-                    async_speak_action(actions[np.argmax(res)])  # Wait until the speech is finished
+                    async_speak_action(actions[np.argmax(res)])  
 
             if len(sentence) > 5:
                 sentence = sentence[-5:]
 
-            # Viz probabilities
+            # olasılıklar
             image = prob_viz(res, actions, image, colors)
 
         cv2.rectangle(image, (0, 0), (640, 40), (245, 117, 16), -1)
         cv2.putText(image, ' '.join(sentence), (3, 30),
                     cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
 
-        # Show to screen
+        # ekren görüntüleme
         cv2.imshow('OpenCV Feed', image)
 
-        # Pencereyi sonlandırmak için q tuşu
+        # Pencereyi sonlandırmak için q tuşuna basın
         if cv2.waitKey(10) & 0xFF == ord('q'):
             break
     cap.release()
