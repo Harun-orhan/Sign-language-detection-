@@ -1,0 +1,6 @@
+Güncellemeler: 
+1-) pyttsx3 ile  ses komutu eklendi 
+2-) çözünürlük eklendi ekran boyutuna göre ayarlanabilir
+3-) aynalama kodu eklendi bu sayede daha düzgün bir Komut sağlama yapılıyor 
+4-) verilen komutu bitirmeden ekran donması vardı artık istediğiniz kadar hızlı Komut verebilirsiniz.
+5-)
